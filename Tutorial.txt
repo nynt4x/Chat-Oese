@@ -82,4 +82,56 @@ io.on('connection', function(socket){
 
 - Now if we run our project again using "node index.js" and open a couple of browsers, you can see that users are connecting in the console and if you close them you can see that users are disconnecting in the console. 
 
-6.
+6. The main idea behind Socket.IO is that you can send and receive any events you want, with any data you want. Any objects that can be encoded as JSON will do, and binary data is supported too. 
+- Let’s make it so that when the user types in a message, the server gets it as a chat message event. Lets go into our index.html file and setup our script to send a event to the server everytime we submit our form/message. 
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+<script>
+  $(function () {
+    var socket = io();
+    $('form').submit(function(e){
+      e.preventDefault(); // prevents page reloading
+      socket.emit('chat message', $('#m').val());
+      $('#m').val('');
+      return false;
+    });
+  });
+</script>
+
+- In index.js we want to print out that message event. 
+
+io.on('connection', function(socket){
+  socket.on('chat message', function(msg){
+    console.log('message: ' + msg);
+  });
+});
+
+7. Broadcasting is the last part of our setup, we need to broadcast the messages to all the connected users, here we will be using io.emit to send the message to everyone connected, including the sender, first we edit our index.js. 
+
+io.on('connection', function(socket){
+  socket.on('chat message', function(msg){
+    io.emit('chat message', msg);
+  });
+});
+
+Then we go into our index.html and change the script for the final time. 
+
+<script>
+  $(function () {
+    var socket = io();
+    $('form').submit(function(e){
+      e.preventDefault(); // prevents page reloading
+      socket.emit('chat message', $('#m').val());
+      $('#m').val('');
+      return false;
+    });
+    socket.on('chat message', function(msg){
+      $('#messages').append($('<li>').text(msg));
+    });
+  });
+</script>
+
+Now if you go to your terminal and write "node index.js" and open the browser on http://localhost:3000/
+you should be able to enter and receive the messages you are writing. 
+
