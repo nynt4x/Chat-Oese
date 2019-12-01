@@ -1,4 +1,4 @@
-Chat application using Nodejs & SocketIO
+Chat application using Nodejs & SocketIO (https://socket.io/get-started/chat)
 1. Make sure Node.JS is installed, we will be using NPM a couple of times during our development.
 - NPM stands for Node Package Manager
 and is used to install packages and dependencies that apps might need to run.
